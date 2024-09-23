@@ -3,17 +3,33 @@ import millify from "millify";
 import { Collapse, Row, Col, Typography, Avatar } from "antd";
 import HTMLReactParser from "html-react-parser";
 
-import { useGetExchangesQuery } from "../services/cryptoApi";
+import { useGetExchangesQuery } from "../services/crypptoApi";
 import Loader from "./Loader";
 
 const { Text } = Typography;
 const { Panel } = Collapse;
 
 const Exchanges = () => {
-  const { data, isFetching } = useGetExchangesQuery();
-  const exchangesList = data?.data?.exchanges;
+  const { data, isFetching, error } = useGetExchangesQuery();
+
+  // Check if the API response contains the error message
+  const errorMessage = data?.message || error?.data?.message;
+
+  // If data exists and it's not an error, extract exchangesList
+  const exchangesList = data?.data?.exchanges || [];
 
   if (isFetching) return <Loader />;
+
+  // If there's an error message, display it
+  if (errorMessage) {
+    return (
+      <Row>
+        <Col span={24}>
+          <Text>{errorMessage}</Text>
+        </Col>
+      </Row>
+    );
+  }
 
   return (
     <>
@@ -24,37 +40,42 @@ const Exchanges = () => {
         <Col span={6}>Change</Col>
       </Row>
       <Row>
-        {exchangesList.map((exchange) => (
+        {exchangesList.length > 0 ? (
+          exchangesList.map((exchange) => (
+            <Col span={24} key={exchange.id}>
+              <Collapse>
+                <Panel
+                  showArrow={false}
+                  header={
+                    <Row>
+                      <Col span={6}>
+                        <Text>
+                          <strong>{exchange.rank}.</strong>
+                        </Text>
+                        <Avatar
+                          className="exchange-image"
+                          src={exchange.iconUrl}
+                        />
+                        <Text>
+                          <strong>{exchange.name}</strong>
+                        </Text>
+                      </Col>
+                      <Col span={6}>${millify(exchange.volume)}</Col>
+                      <Col span={6}>{millify(exchange.numberOfMarkets)}</Col>
+                      <Col span={6}>{millify(exchange.marketShare)}%</Col>
+                    </Row>
+                  }
+                >
+                  {HTMLReactParser(exchange.description || "")}
+                </Panel>
+              </Collapse>
+            </Col>
+          ))
+        ) : (
           <Col span={24}>
-            <Collapse>
-              <Panel
-                key={exchange.id}
-                showArrow={false}
-                header={
-                  <Row key={exchange.id}>
-                    <Col span={6}>
-                      <Text>
-                        <strong>{exchange.rank}.</strong>
-                      </Text>
-                      <Avatar
-                        className="exchange-image"
-                        src={exchange.iconUrl}
-                      />
-                      <Text>
-                        <strong>{exchange.name}</strong>
-                      </Text>
-                    </Col>
-                    <Col span={6}>${millify(exchange.volume)}</Col>
-                    <Col span={6}>{millify(exchange.numberOfMarkets)}</Col>
-                    <Col span={6}>{millify(exchange.marketShare)}%</Col>
-                  </Row>
-                }
-              >
-                {HTMLReactParser(exchange.description || "")}
-              </Panel>
-            </Collapse>
+            <Text>No exchanges available</Text>
           </Col>
-        ))}
+        )}
       </Row>
     </>
   );
