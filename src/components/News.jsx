@@ -78,11 +78,6 @@ const News = ({ simplified }) => {
                     }
                     alt=""
                   />
-                  <Text className="provider-name">
-                    {news.provider && news.provider.length > 0
-                      ? news.provider[0]?.name
-                      : "Unknown"}
-                  </Text>
                 </div>
                 <Text>{moment(news.createdAt).startOf("ss").fromNow()}</Text>
               </div>
