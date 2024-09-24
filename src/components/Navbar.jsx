@@ -38,22 +38,38 @@ const Navbar = () => {
     {
       key: "home",
       icon: <HomeOutlined />,
-      label: <Link to="/">Home</Link>,
+      label: (
+        <Link to="/" onClick={() => setActiveMenu(false)}>
+          Home
+        </Link>
+      ),
     },
     {
       key: "cryptocurrencies",
       icon: <FundOutlined />,
-      label: <Link to="/cryptocurrencies">Cryptocurrencies</Link>,
+      label: (
+        <Link to="/cryptocurrencies" onClick={() => setActiveMenu(false)}>
+          Cryptocurrencies
+        </Link>
+      ),
     },
     {
       key: "exchanges",
       icon: <MoneyCollectOutlined />,
-      label: <Link to="/exchanges">Exchanges</Link>,
+      label: (
+        <Link to="/exchanges" onClick={() => setActiveMenu(false)}>
+          Exchanges
+        </Link>
+      ),
     },
     {
       key: "news",
       icon: <BulbOutlined />,
-      label: <Link to="/news">News</Link>,
+      label: (
+        <Link to="/news" onClick={() => setActiveMenu(false)}>
+          News
+        </Link>
+      ),
     },
   ];
 
